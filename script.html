@@ -1,0 +1,73 @@
+<script>
+function getOrCreateBrowserId() {
+  let browserId = localStorage.getItem("browserId");
+  if (!browserId) {
+    browserId = crypto.randomUUID();
+    localStorage.setItem("browserId", browserId);
+  }
+  return browserId;
+}
+
+function getFingerprint() {
+  return btoa(
+    navigator.userAgent +
+    navigator.language +
+    screen.width +
+    screen.height +
+    navigator.platform
+  );
+}
+
+const userId = prompt("Entrez votre identifiant Caséine :") || "inconnu";
+const browserId = getOrCreateBrowserId();
+const fingerprint = getFingerprint();
+const timestamp = Date.now();
+
+const payload = { userId, browserId, fingerprint, timestamp };
+
+// 1. Envoie la connexion actuelle au serveur
+fetch("http://localhost:3000/log", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+})
+.then(() => {
+  // 2. Récupère la liste complète depuis le serveur
+  return fetch("http://localhost:3000/connexions");
+})
+.then(res => res.json())
+.then(historique => {
+  // 3. Filtrage pour cet utilisateur
+  const userLogs = historique.filter(e => e.userId === userId);
+  const uniqueBrowsers = new Set(userLogs.map(e => e.browserId));
+
+  // 4. Affichage résumé
+  const summaryDiv = document.getElementById("summary");
+  summaryDiv.innerHTML = `
+    <p><strong>Utilisateur :</strong> ${userId}</p>
+    <p><strong>Browser ID :</strong> ${browserId}</p>
+    <p><strong>Navigateurs différents connectés :</strong> ${uniqueBrowsers.size}</p>
+    <p><strong>Connexions actives pour ce compte :</strong> ${userLogs.length}</p>
+  `;
+
+  const alerteDiv = document.getElementById("alerte");
+  alerteDiv.textContent =
+    uniqueBrowsers.size > 1
+      ? "⚠️ Connexions multiples détectées pour ce compte."
+      : "✅ Une seule session active détectée.";
+
+  // 5. Affichage tableau
+  const tbody = document.querySelector("#logTable tbody");
+  tbody.innerHTML = "";
+  historique.forEach(entry => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${entry.userId}</td>
+      <td>${entry.browserId}</td>
+      <td>${entry.fingerprint}</td>
+      <td>${new Date(entry.timestamp).toLocaleString()}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+});
+</script>

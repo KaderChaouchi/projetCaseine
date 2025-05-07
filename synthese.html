@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Synthèse WebSocket</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" crossorigin="anonymous"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    .vert { background-color: #d4edda; }
+    .orange { background-color: #fff3cd; }
+  </style>
+</head>
+<body>
+  <h2>Synthèse des Connexions (Temps Réel)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Utilisateur</th>
+        <th>Nombre de navigateurs actifs</th>
+        <th>Total de connexions</th>
+      </tr>
+    </thead>
+    <tbody id="tableau"></tbody>
+  </table>
+
+  <script>
+    const socket = io("http://localhost:3000");
+
+    socket.on("connect", () => {
+      console.log("✅ Connecté au serveur WebSocket");
+      chargerConnexions(); // Chargement initial
+    });
+
+    socket.on("maj_connexions", () => {
+      console.log("📡 Mise à jour reçue");
+      chargerConnexions();
+    });
+
+    function chargerConnexions() {
+      fetch("http://localhost:3000/connexions")
+        .then(res => res.json())
+        .then(data => {
+          const regroupement = {};
+
+          data.forEach(entry => {
+            const { userId, browserId } = entry;
+            if (!regroupement[userId]) {
+              regroupement[userId] = {
+                total: 0,
+                navigateurs: new Set()
+              };
+            }
+            regroupement[userId].total += 1;
+            regroupement[userId].navigateurs.add(browserId);
+          });
+
+          const tbody = document.getElementById("tableau");
+          tbody.innerHTML = "";
+
+          Object.entries(regroupement).forEach(([userId, infos]) => {
+            const tr = document.createElement("tr");
+            const nbNavigateurs = infos.navigateurs.size;
+
+            tr.className = nbNavigateurs > 1 ? "orange" : "vert";
+
+            tr.innerHTML = `
+              <td>${userId}</td>
+              <td>${nbNavigateurs}</td>
+              <td>${infos.total}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        });
+    }
+  </script>
+</body>
+</html>
