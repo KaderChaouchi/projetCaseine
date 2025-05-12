@@ -12,7 +12,7 @@
 
 ## Méthode 2 :
 
-```
+```html
 <p id="identifiant"></p>
 <script>
   function generateBrowserFingerprint() {
