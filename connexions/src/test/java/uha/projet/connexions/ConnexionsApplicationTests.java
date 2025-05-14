@@ -1,0 +1,13 @@
+package uha.projet.connexions;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ConnexionsApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
