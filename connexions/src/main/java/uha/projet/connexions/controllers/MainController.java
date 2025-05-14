@@ -7,7 +7,10 @@ package uha.projet.connexions.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import uha.projet.connexions.Connexions;
 
 
 /**
@@ -16,10 +19,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
+@SessionAttributes("donnees")
 public class MainController {
-    @GetMapping("/log")
-    public String log(Model model)
+    
+    @ModelAttribute("donnees")
+    public Connexions creeAttribut()
     {
+        return new Connexions();
+    }
+    
+    @GetMapping("/log")
+    @ModelAttribute("donnees")
+    public String log(@ModelAttribute("donnees") Connexions listeEtud, Model model)
+    {
+        model.addAttribute("liste", listeEtud);
         return "log";
     }
 }
