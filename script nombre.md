@@ -73,3 +73,115 @@
   document.getElementById("fingerprint").innerText = output;
 </script>
 ```
+
+## méthode prof : 
+
+```html
+<p id="nombre"></p>
+<p>
+  <br>
+</p>
+<p id="nombre"></p>
+<script>
+  function listCookies() {
+    var theCookies = document.cookie.split(';');
+    var aString = '';
+    for (var i = 1; i <= theCookies.length; i++) {
+      aString += i + ' ' + theCookies[i - 1] + "\n";
+    }
+    return aString;
+  }
+
+  //let $i = Math.floor(Math.random() * 101);
+  let $i = listCookies();
+  document.getElementById("nombre").innerHTML = "<h2>" + $i + "</h2>";
+</script>
+```
+
+## méthode 4
+
+```html
+`<p id="username"></p>
+<p id="cookie"></p>
+<p id="fingerprint"></p>
+<script>
+  (function() {
+
+    function getCookie(name) {
+
+      const value = "; " + document.cookie;
+
+      const parts = value.split("; " + name + "=");
+
+      if (parts.length === 2) return parts.pop().split(";").shift();
+
+      return null;
+
+    }
+
+
+    function getUserName() {
+
+      const initialsSpan = document.querySelector(".userinitials");
+
+      if (!initialsSpan) return null;
+
+      const userMenu = document.querySelector(".usermenu-container");
+
+      if (!userMenu) return null;
+
+      const fullNameNode = userMenu.querySelector("a[aria-label='User menu']");
+
+      if (fullNameNode && fullNameNode.getAttribute("aria-label")) {
+
+        return fullNameNode.getAttribute("aria-label");
+
+      }
+
+      return initialsSpan.textContent;
+
+    }
+
+
+    function getDeviceFingerprint() {
+
+      return {
+
+        userAgent: navigator.userAgent,
+
+        screen: `$ {
+          screen.width
+        }
+        x$ {
+          screen.height
+        }`,
+
+        language: navigator.language,
+
+      };
+
+    }
+
+
+    const sessionCookie = getCookie("MoodleSession");
+
+    const username = getUserName();
+
+    const fingerprint = getDeviceFingerprint();
+
+
+    console.log("Utilisateur connecté :", username);
+
+    console.log("Cookie de session :", sessionCookie);
+
+    console.log("Empreinte appareil :", fingerprint);
+
+    document.getElementById("username").innerText = username;
+    document.getElementById("cookie").innerText = sessionCookie;
+    document.getElementById("fingerprint").innerText = fingerprint;
+
+
+  })();
+</script>
+```
+
