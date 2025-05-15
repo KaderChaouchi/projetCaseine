@@ -4,6 +4,7 @@
  */
 package uha.projet.connexions.controllers;
 
+import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import uha.projet.connexions.Connexions;
+import uha.projet.connexions.Etudiant;
 
 
 /**
@@ -24,9 +26,9 @@ import uha.projet.connexions.Connexions;
 public class MainController {
     
     @ModelAttribute("donnees")
-    public Connexions creeAttribut()
+    public ArrayList<Etudiant> creeAttribut()
     {
-        return new Connexions();
+        return new ArrayList<Etudiant>();
     }
     
     @GetMapping("/log")
@@ -37,28 +39,30 @@ public class MainController {
     }
     
     @GetMapping("/test")
-    @ModelAttribute("donnees")
-    public String test(@ModelAttribute("donnees") Connexions listeEtud, Model model)
+    public String test(@ModelAttribute("donnees") ArrayList<Etudiant> listeEtud, Model model)
     {
-        listeEtud.ajout("123", "John Smith", "789");
+        Etudiant e = new Etudiant("123", "John Smith", "789");
+        listeEtud.add(e);
         
         model.addAttribute("info", listeEtud);
         return "test";
     }
     
     @GetMapping("/affiche")
-    public String affiche(@ModelAttribute("donnees") Connexions listeEtud, Model model)
+    public String affiche(@ModelAttribute("donnees") ArrayList<Etudiant> listeEtud, Model model)
     {
         model.addAttribute("info", listeEtud);
         return "affiche";
     }
     
     @PostMapping("/recharge")
-    public String ajoutCookie(@ModelAttribute("donnees") Connexions listEtud, String nom_etud, String id_vpl, String cookie)
+    public String ajoutCookie(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud, String nom_etud, String id_vpl, String cookie)
     {
-        listEtud.ajout(id_vpl, nom_etud, cookie);
+        Etudiant e = new Etudiant(id_vpl, nom_etud, cookie);
+        if(!listEtud.contains(e))
+        {
+            listEtud.add(e);
+        }
         return "redirect:/affiche";
     }
-    
-    
 }
