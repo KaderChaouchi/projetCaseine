@@ -12,7 +12,6 @@ public class Etudiant {
     private String ID_VPL;
     private String ID_etudiant;
     private String Cookie;
-    private String Code_VPL; ///code vpl unique généré dans desc
 
     public String getID_VPL() {
         return ID_VPL;
@@ -37,34 +36,33 @@ public class Etudiant {
     public void setCookie(String Cookie) {
         this.Cookie = Cookie;
     }
-
-    public String getCode_VPL() {
-        return Code_VPL;
-    }
-
-    public void setCode_VPL(String Code_VPL) {
-        this.Code_VPL = Code_VPL;
-    }
+    
     
     public Etudiant()
     {
         ID_VPL = "00000";
-        Code_VPL = " ";
         ID_etudiant = " ";
         Cookie = " ";
+    }
+    
+    public Etudiant(String id_vpl, String code_vpl, String etudiant, String cookie)
+    {
+        ID_VPL = id_vpl;
+        ID_etudiant = etudiant;
+        Cookie = cookie;
     }
     
     public boolean isDoubleOf(Etudiant e)
     {
         return (ID_VPL.equals(e.getID_VPL())
                 && ID_etudiant.equals(e.getID_etudiant())
-                && Cookie.equals(e.getCookie())
-                && !(Code_VPL.equals(e.getCode_VPL())));
+                && !(Cookie.equals(e.getCookie())));
     }
     
     public String afficheHTML()
     {
-        return "<p> "+ ID_VPL + " ; " + ID_etudiant+ " ; "+ Code_VPL +" </p>";
+        String s =  ""+ ID_VPL + " , " + ID_etudiant+ " , " + Cookie + "";
+        return s;
     }
     
 }

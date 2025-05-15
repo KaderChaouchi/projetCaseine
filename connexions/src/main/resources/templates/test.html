@@ -11,11 +11,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </head>
     <body>
         <div>Voici les logs de connexions</div>
-        <th:block th:each=" elt : ${info}"> 138
-    <span th:text="${elt.afficheHTML()()}"/><br> 139
+        <th:block th:each="elt : ${info}">
+    <span th:text="${elt.afficheHTML()}"/><br>
     </th:block>
-        
-        
-        
-    </body>
+    
+</body>
 </html>

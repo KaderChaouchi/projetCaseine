@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import uha.projet.connexions.Connexions;
@@ -29,10 +30,35 @@ public class MainController {
     }
     
     @GetMapping("/log")
-    @ModelAttribute("donnees")
     public String log(@ModelAttribute("donnees") Connexions listeEtud, Model model)
     {
         model.addAttribute("liste", listeEtud);
         return "log";
     }
+    
+    @GetMapping("/test")
+    @ModelAttribute("donnees")
+    public String test(@ModelAttribute("donnees") Connexions listeEtud, Model model)
+    {
+        listeEtud.ajout("123", "456", "John Smith", "789");
+        
+        model.addAttribute("info", listeEtud);
+        return "test";
+    }
+    
+    @GetMapping("/affiche")
+    @ModelAttribute("donnees")
+    public String affiche(@ModelAttribute("donnees") Connexions listeEtud, Model model)
+    {
+        model.addAttribute("info", listeEtud);
+        return "affiche";
+    }
+    
+    @PostMapping("/recharge")
+    public String ajoutCookie(@ModelAttribute("donnees") Connexions listEtud, String nom_etud, String id_vpl, String cookie)
+    {
+        return "redirect:/affiche";
+    }
+    
+    
 }

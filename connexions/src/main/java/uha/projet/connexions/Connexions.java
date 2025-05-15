@@ -20,8 +20,17 @@ public class Connexions {
         liste = new ArrayList<>();
     }
     
-    public void add(Etudiant e)
+    public void ajout(Etudiant e)
     {
+        if(! liste.contains(e))
+        {
+            liste.add(e);
+        }
+    }
+    
+    public void ajout(String id_vpl, String code_vpl, String etudiant, String cookie)
+    {
+        Etudiant e = new Etudiant(id_vpl, code_vpl, etudiant, cookie);
         if(! liste.contains(e))
         {
             liste.add(e);
@@ -33,7 +42,7 @@ public class Connexions {
         String s = "";
         for(int i = 0; i<liste.size(); i++)
         {
-            s+= liste.get(i).afficheHTML();
+            s += liste.get(i).afficheHTML();
         }
         return s;
     }
