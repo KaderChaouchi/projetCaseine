@@ -28,9 +28,9 @@ public class Connexions {
         }
     }
     
-    public void ajout(String id_vpl, String code_vpl, String etudiant, String cookie)
+    public void ajout(String id_vpl, String etudiant, String cookie)
     {
-        Etudiant e = new Etudiant(id_vpl, code_vpl, etudiant, cookie);
+        Etudiant e = new Etudiant(id_vpl, etudiant, cookie);
         if(! liste.contains(e))
         {
             liste.add(e);

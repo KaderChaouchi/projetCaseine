@@ -45,7 +45,7 @@ public class Etudiant {
         Cookie = " ";
     }
     
-    public Etudiant(String id_vpl, String code_vpl, String etudiant, String cookie)
+    public Etudiant(String id_vpl, String etudiant, String cookie)
     {
         ID_VPL = id_vpl;
         ID_etudiant = etudiant;

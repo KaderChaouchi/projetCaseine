@@ -40,14 +40,13 @@ public class MainController {
     @ModelAttribute("donnees")
     public String test(@ModelAttribute("donnees") Connexions listeEtud, Model model)
     {
-        listeEtud.ajout("123", "456", "John Smith", "789");
+        listeEtud.ajout("123", "John Smith", "789");
         
         model.addAttribute("info", listeEtud);
         return "test";
     }
     
     @GetMapping("/affiche")
-    @ModelAttribute("donnees")
     public String affiche(@ModelAttribute("donnees") Connexions listeEtud, Model model)
     {
         model.addAttribute("info", listeEtud);
@@ -57,6 +56,7 @@ public class MainController {
     @PostMapping("/recharge")
     public String ajoutCookie(@ModelAttribute("donnees") Connexions listEtud, String nom_etud, String id_vpl, String cookie)
     {
+        listEtud.ajout(id_vpl, nom_etud, cookie);
         return "redirect:/affiche";
     }
     
