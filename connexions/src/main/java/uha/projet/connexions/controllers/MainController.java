@@ -42,7 +42,10 @@ public class MainController {
     public String test(@ModelAttribute("donnees") ArrayList<Etudiant> listeEtud, Model model)
     {
         Etudiant e = new Etudiant("123", "John Smith", "789");
-        listeEtud.add(e);
+        if(!listeEtud.contains(e))
+        {
+            listeEtud.add(e);
+        }
         
         model.addAttribute("info", listeEtud);
         return "test";
@@ -55,7 +58,7 @@ public class MainController {
         return "affiche";
     }
     
-    @PostMapping("/recharge")
+    @GetMapping("/recharge")
     public String ajoutCookie(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud, String nom_etud, String id_vpl, String cookie)
     {
         Etudiant e = new Etudiant(id_vpl, nom_etud, cookie);

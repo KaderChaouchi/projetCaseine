@@ -65,4 +65,20 @@ public class Etudiant {
         return s;
     }
     
+    /**
+     *
+     * @param o
+     * @return boolean : true if equals, false if not
+     */
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o==null || o.getClass() != getClass())
+            return false;
+        
+        Etudiant e = (Etudiant)o;
+            
+        return ID_VPL.equals(e.getID_VPL()) && ID_etudiant.equals(e.getID_etudiant()) && Cookie.equals(e.getCookie());
+}
+    
 }
