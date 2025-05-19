@@ -1,0 +1,64 @@
+<p id="info"></p>
+<p><br></p>
+
+<script>
+function getFakeUserFullName() {
+    const nomsFictifs = ["Alice Dupont", "Bob Martin", "Chloe Bernard", "David Moreau", "Emma Leroy"];
+    return nomsFictifs[Math.floor(Math.random() * nomsFictifs.length)];
+}
+
+function getFakeCookie() {
+    const lettres = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let cookie = "";
+    for (let i = 0; i < 20; i++) {
+        cookie += lettres[Math.floor(Math.random() * lettres.length)];
+    }
+    return cookie;
+}
+
+function getFakeVPLId() {
+    const ids = [12345, 23456, 34567, 45678, 56789];
+    return ids[Math.floor(Math.random() * ids.length)];
+}
+
+function getDeviceFingerprint() {
+    return {
+        userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        screen: "1920x1080",
+        language: "fr-FR"
+    };
+}
+
+// --- Données fictives ---
+const username = getFakeUserFullName();
+const cookieValue = getFakeCookie();
+const id_vpl = getFakeVPLId();
+const fingerprint = getDeviceFingerprint();
+
+// --- Affichage à l'écran ---
+document.getElementById("info").innerHTML = `
+  <h2>Informations envoyées</h2>
+  <p>Nom : ${username}</p>
+  <p>Cookie : ${cookieValue}</p>
+  <p>ID VPL : ${id_vpl}</p>
+  <p>User Agent : ${fingerprint.userAgent}</p>
+  <p>Résolution : ${fingerprint.screen}</p>
+  <p>Langue : ${fingerprint.language}</p>
+`;
+
+// --- Construction de l'URL ---
+const url = `http://localhost:8080/recharge?nom_etud=${encodeURIComponent(username)}&id_vpl=${encodeURIComponent(id_vpl)}&cookie=${encodeURIComponent(cookieValue)}`;
+
+// --- Envoi de la requête GET ---
+fetch(url)
+  .then(response => {
+    if (response.ok) {
+      console.log("✅ Requête envoyée avec succès à :", url);
+    } else {
+      console.error("❌ Erreur côté serveur");
+    }
+  })
+  .catch(error => {
+    console.error("❌ Erreur réseau :", error);
+  });
+</script>
