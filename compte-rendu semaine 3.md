@@ -9,3 +9,12 @@
 http://localhost:8080/recharge?nom_etud=ABC3&id_vpl=voici2&cookie=azerty123
  cela fonctionne, mais en lançant depuis une autre source comme le vpl, cela ne fonctionne pas.
 
+### Mardi
+
+- relevé des adresses ip des salles E37 et E38 :
+    - E37 : 10.8.11.1
+    - E38 : 10.8.12.1
+- toujours pas d'avancée sur le coté serveur, car les requête venant de l'exterieur ne sont pas prises en compte.
+- avancée, peut recevoir les requêtes depuis une autre machine de la même salle, avec nom, id vpl et cookie.
+
+### Mercredi
