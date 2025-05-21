@@ -14,7 +14,24 @@ http://localhost:8080/recharge?nom_etud=ABC3&id_vpl=voici2&cookie=azerty123
 - relevé des adresses ip des salles E37 et E38 :
     - E37 : 10.8.11.1
     - E38 : 10.8.12.1
-- toujours pas d'avancée sur le coté serveur, car les requête venant de l'exterieur ne sont pas prises en compte.
+- toujours pas d'avancée sur le coté serveur, car les requêtes venant de l'exterieur ne sont pas prises en compte.
 - avancée, peut recevoir les requêtes depuis une autre machine de la même salle, avec nom, id vpl et cookie.
 
 ### Mercredi
+
+- changement de @Controller vers @RestController
+- affichage en local depuis le vpl OK
+- affichage apr_s reception depuis un autre pc 
+- création d'une url tunnel qui rend possible l'envoi depuis d'autre pc hors fac avec localtunnel OK
+
+### Jeudi
+
+- test avec ngrok
+
+### semaine prochaine
+
+- faire en sorte que le serveur soit en version portable et soit facilement lancable avec un fichier executable
+- créer un algorithme qui peut analyser les données et montrer qui est en train de tricher en rouge, avec un historique et des explications pour les éventuels changements (changement de navigateur ou de machines en différent cas).
+
+
+

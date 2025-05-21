@@ -28,14 +28,7 @@ public class Connexions {
         }
     }
     
-    public void ajout(String id_vpl, String etudiant, String cookie)
-    {
-        Etudiant e = new Etudiant(id_vpl, etudiant, cookie);
-        if(! liste.contains(e))
-        {
-            liste.add(e);
-        }
-    }
+    
     
     public String afficheHTML()
     {
