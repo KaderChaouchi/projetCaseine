@@ -1,0 +1,55 @@
+Structure du dossier pour le volume Donnees
+Le num‚ro de s‚rie du volume est 0C08-FA86
+D:.
+ÃÄÄÄ.mvn
+³   ÀÄÄÄwrapper
+ÃÄÄÄsrc
+³   ÃÄÄÄmain
+³   ³   ÃÄÄÄjava
+³   ³   ³   ÀÄÄÄuha
+³   ³   ³       ÀÄÄÄprojet
+³   ³   ³           ÀÄÄÄconnexions
+³   ³   ³               ÀÄÄÄcontrollers
+³   ³   ÀÄÄÄresources
+³   ³       ÃÄÄÄstatic
+³   ³       ÀÄÄÄtemplates
+³   ÀÄÄÄtest
+³       ÀÄÄÄjava
+³           ÀÄÄÄuha
+³               ÀÄÄÄprojet
+³                   ÀÄÄÄconnexions
+ÀÄÄÄtarget
+    ÃÄÄÄclasses
+    ³   ÃÄÄÄtemplates
+    ³   ÀÄÄÄuha
+    ³       ÀÄÄÄprojet
+    ³           ÀÄÄÄconnexions
+    ³               ÀÄÄÄcontrollers
+    ÃÄÄÄgenerated-sources
+    ³   ÀÄÄÄannotations
+    ÃÄÄÄgenerated-test-sources
+    ³   ÀÄÄÄtest-annotations
+    ÃÄÄÄjavadoc-bundle-options
+    ÃÄÄÄmaven-archiver
+    ÃÄÄÄmaven-status
+    ³   ÀÄÄÄmaven-compiler-plugin
+    ³       ÃÄÄÄcompile
+    ³       ³   ÀÄÄÄdefault-compile
+    ³       ÀÄÄÄtestCompile
+    ³           ÀÄÄÄdefault-testCompile
+    ÃÄÄÄreports
+    ³   ÀÄÄÄapidocs
+    ³       ÃÄÄÄlegal
+    ³       ÃÄÄÄresource-files
+    ³       ÃÄÄÄscript-files
+    ³       ÀÄÄÄuha
+    ³           ÀÄÄÄprojet
+    ³               ÀÄÄÄconnexions
+    ³                   ÃÄÄÄclass-use
+    ³                   ÀÄÄÄcontrollers
+    ³                       ÀÄÄÄclass-use
+    ÃÄÄÄsurefire-reports
+    ÀÄÄÄtest-classes
+        ÀÄÄÄuha
+            ÀÄÄÄprojet
+                ÀÄÄÄconnexions
