@@ -109,6 +109,7 @@ public class MainController {
                 + "<th> VPL</th>"
                 + "<th> Nom </th>"
                 + "<th> Cookie </th>"
+                + "<th>Commentaire </th>"
                 + "</tr><br>";
         for (int i = 0; i < liste.size(); i++) {
             s += liste.get(i).afficheHTML() + "<br>";
@@ -132,14 +133,17 @@ public class MainController {
         }
         Etudiant e = new Etudiant(id_vpl, nom, cookie, ip);
 
-        if (!liste.contains(e)) {
-            liste.add(e);
+        if (!(e.getID_etudiant().equals("Utilisateur non trouvé"))) {
+            if (!liste.contains(e)) {
+                e.setCommentFromList(liste);
+                liste.add(e);
+            }
         }
 
-        System.out.println("📥 Requete reçue de " + ip);
-        System.out.println("👤 nom_etud = " + nom);
-        System.out.println("🆔 id_vpl   = " + id_vpl);
-        System.out.println("🍪 cookie   = " + cookie);
+        System.out.println("Requete reçue de " + ip);
+        System.out.println("nom_etud = " + nom);
+        System.out.println("id_vpl   = " + id_vpl);
+        System.out.println("cookie   = " + cookie);
         //return ResponseEntity.ok("Reçu depuis " + remoteIp);
         return new RedirectView("/affiche");
     }

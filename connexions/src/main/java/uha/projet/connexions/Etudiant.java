@@ -4,6 +4,8 @@
  */
 package uha.projet.connexions;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author e1901478
@@ -13,6 +15,7 @@ public class Etudiant {
     private String ID_etudiant;
     private String Cookie;
     private String ip_adress;
+    private String comment;
 
     public String getID_VPL() {
         return ID_VPL;
@@ -45,7 +48,42 @@ public class Etudiant {
     public void setIp_adress(String ip_adress) {
         this.ip_adress = ip_adress;
     }
+
     
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+    
+    public void setCommentFromList(ArrayList<Etudiant> list)
+    {
+        String com = "";
+        for(int i =0 ; i <list.size(); i++)
+        {
+            
+            if(ID_etudiant.equals(list.get(i).getID_etudiant()))
+            {
+                if(ID_VPL.equals(list.get(i).getID_VPL()))
+                {
+                if(!ip_adress.equals(list.get(i).getIp_adress()))
+                {
+                    com += " Triche ! ";
+                }
+                else if(!Cookie.equals(list.get(i).getCookie()))
+                {
+                    com += " Changement de navigateur ! ";
+                }
+                }
+                else{
+                    com+= " Autre vpl ";
+                }
+            }
+        }
+        comment = com;
+    }
     
     public Etudiant()
     {
@@ -53,6 +91,7 @@ public class Etudiant {
         ID_etudiant = " ";
         Cookie = " ";
         ip_adress = "0.0.0.0";
+        comment = "";
     }
     
     public Etudiant(String id_vpl, String etudiant, String cookie, String ip_add)
@@ -61,6 +100,7 @@ public class Etudiant {
         ID_etudiant = etudiant;
         Cookie = cookie;
         ip_adress = ip_add;
+        comment = "";
     }
     
 public boolean isDoubleOf(Etudiant e)
@@ -72,7 +112,7 @@ public boolean isDoubleOf(Etudiant e)
     
     public String afficheHTML()
     {
-        String s = "<tr><th>"+ ip_adress+ "</th> <th> "+ ID_VPL + " </th> <th> " + ID_etudiant+ " </th> <th> " + Cookie + " </th></tr>";
+        String s = "<tr><th>"+ ip_adress+ "</th> <th> "+ ID_VPL + " </th> <th> " + ID_etudiant+ " </th> <th> " + Cookie + " </th><th>"+comment + "</th></tr>";
         return s;
     }
     
