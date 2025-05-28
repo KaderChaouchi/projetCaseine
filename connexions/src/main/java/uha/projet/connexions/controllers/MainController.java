@@ -88,15 +88,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-@RestController
-
+@Controller
 public class MainController {
 
     ArrayList<Etudiant> liste = new ArrayList<Etudiant>();
 
     @GetMapping("/affiche")
     public String affiche(@ModelAttribute("donnees") ArrayList<Etudiant> listeEtud, Model model) {
-        String s = "<head>\n"
+        /*String s = "<head>\n"
                 + "<title>Log de connexions</title>\n"
                 + "<meta charset=\"UTF-8\">\n"
                 + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
@@ -116,8 +115,8 @@ public class MainController {
         }
 
         s += "</table>"
-                + "</body>";
-        return s;
+                + "</body>";*/
+        return "affiche";
     }
 
     @RequestMapping("/recharge")
