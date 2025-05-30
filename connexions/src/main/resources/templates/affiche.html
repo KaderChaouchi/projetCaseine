@@ -10,9 +10,58 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>Voici les logs de connexions</div>
-        <th:block th:each=" elt : ${info}">
-    <span th:text="${elt.afficheHTML()}"/><br>
+        <h1>Voici les logs de connexions</h1>
+        
+        <h2>ajout requête(for testing purposes)</h2>
+        <form action="./recharge" method = "get">
+            Nom_étudiant <input type = "text" name="nom_etud"><br>
+            VPL <input type = "text" name="id_vpl"><br>
+            Cookie <input type ="text" name="cookie"><br>
+            <input type ="submit" value ="Ajouter">
+        </form>
+        
+        <h2>Filtrés</h2>
+        <form method = "get" action ="./filtre">
+            VPL <input type = "text" name="vpl"><br>
+            Nom de l'étudiant<input type ="text" name="etudiant"><br>
+            <input type ="submit" value ="Filtrer">
+        </form>
+        <table>
+            <tr>
+                <th>Adresse ip</th>
+                <th>Id vpl</th>
+                <th>Nom étudiant</th>
+                <th>Cookie</th>
+                <th>Commentaire</th>
+                </tr>
+        <th:block th:each=" elt2 : ${filtree}">
+            <tr>
+                <td> <span th:text="${elt2.getIp_adress()}"/></td>
+                <td> <span th:text="${elt2.getID_VPL()}"/></td>
+                <td> <span th:text="${elt2.getID_etudiant()}"/></td>
+                <td> <span th:text="${elt2.getCookie()}"/></td>
+                <td> <span th:text="${elt2.getComment()}"/></td>
+            </tr>
     </th:block>
+        </table>
+        <h2>Non Filtrés</h2>
+        <table>
+            <tr>
+                <th>Adresse ip</th>
+                <th>Id vpl</th>
+                <th>Nom étudiant</th>
+                <th>Cookie</th>
+                <th>Commentaire</th>
+                </tr>
+        <th:block th:each=" elt : ${info}">
+            <tr>
+                <td> <span th:text="${elt.getIp_adress()}"/></td>
+                <td> <span th:text="${elt.getID_VPL()}"/></td>
+                <td> <span th:text="${elt.getID_etudiant()}"/></td>
+                <td> <span th:text="${elt.getCookie()}"/></td>
+                <td> <span th:text="${elt.getComment()}"/></td>
+            </tr>
+    </th:block>
+        </table>
     </body>
 </html>

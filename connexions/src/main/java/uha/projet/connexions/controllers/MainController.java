@@ -89,13 +89,86 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
+@SessionAttributes("donnees")
 public class MainController {
 
-    ArrayList<Etudiant> liste = new ArrayList<Etudiant>();
+    //ArrayList<Etudiant> liste = new ArrayList<Etudiant>();
+    @ModelAttribute("donnees")
+    public ArrayList<Etudiant> creeAttribut() {
+        return new ArrayList<Etudiant>();
+    }
 
     @GetMapping("/affiche")
     public String affiche(@ModelAttribute("donnees") ArrayList<Etudiant> listeEtud, Model model) {
-        /*String s = "<head>\n"
+
+        model.addAttribute("info", listeEtud);
+        return "affiche";
+    }
+
+    @GetMapping("/recharge")
+    public RedirectView connexion(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud,
+            @RequestParam("nom_etud") String nom_etud,
+            @RequestParam("id_vpl") String id_vpl,
+            @RequestParam("cookie") String cookie,
+            HttpServletRequest request
+    ) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null) {
+            ip = request.getRemoteAddr(); // fallback
+        }
+        Etudiant e = new Etudiant(id_vpl, nom_etud, cookie, ip);
+
+        if (!(e.getID_etudiant().equals("Utilisateur non trouvé"))) {
+            if (!listEtud.contains(e)) {
+                e.setCommentFromList(listEtud);
+                listEtud.add(e);
+            }
+        }
+        System.out.println("Requete reçue de " + ip);
+        System.out.println("nom_etud = " + nom_etud);
+        System.out.println("id_vpl   = " + id_vpl);
+        System.out.println("cookie   = " + cookie);
+        //return ResponseEntity.ok("Reçu depuis " + remoteIp);
+        return new RedirectView("/affiche");
+    }
+
+    @GetMapping("/filtre")
+    public RedirectView filtrage(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud,
+            Model model,
+            @RequestParam("vpl") String vpl,
+            @RequestParam("etudiant") String etudiant) {
+
+        ArrayList<Etudiant> filtree = new ArrayList<>();
+        for (int i = 0; i < listEtud.size(); i++) {
+            if (vpl != null) {
+                if (etudiant != null) {
+                    if (listEtud.get(i).getID_VPL().equals(vpl) && listEtud.get(i).getID_etudiant().equals(etudiant)) {
+                        filtree.add(listEtud.get(i));
+                    }
+                } else {
+                    if (listEtud.get(i).getID_VPL().equals(vpl)) {
+                        filtree.add(listEtud.get(i));
+                    }
+                }
+            } else {
+                if (etudiant != null) {
+                    if (listEtud.get(i).getID_etudiant().equals(etudiant)) {
+                        filtree.add(listEtud.get(i));
+                    }
+                } else {
+                    filtree.add(listEtud.get(i));
+                }
+            }
+        }
+
+        model.addAttribute("filtree", filtree);
+        return new RedirectView("/affiche");
+    }
+
+}
+
+
+/*String s = "<head>\n"
                 + "<title>Log de connexions</title>\n"
                 + "<meta charset=\"UTF-8\">\n"
                 + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
@@ -116,34 +189,3 @@ public class MainController {
 
         s += "</table>"
                 + "</body>";*/
-        return "affiche";
-    }
-
-    @RequestMapping("/recharge")
-    public RedirectView connexion(
-            @RequestParam("nom_etud") String nom,
-            @RequestParam("id_vpl") String id_vpl,
-            @RequestParam("cookie") String cookie,
-            HttpServletRequest request
-    ) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null) {
-            ip = request.getRemoteAddr(); // fallback
-        }
-        Etudiant e = new Etudiant(id_vpl, nom, cookie, ip);
-
-        if (!(e.getID_etudiant().equals("Utilisateur non trouvé"))) {
-            if (!liste.contains(e)) {
-                e.setCommentFromList(liste);
-                liste.add(e);
-            }
-        }
-
-        System.out.println("Requete reçue de " + ip);
-        System.out.println("nom_etud = " + nom);
-        System.out.println("id_vpl   = " + id_vpl);
-        System.out.println("cookie   = " + cookie);
-        //return ResponseEntity.ok("Reçu depuis " + remoteIp);
-        return new RedirectView("/affiche");
-    }
-}

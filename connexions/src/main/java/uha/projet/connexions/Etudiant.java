@@ -49,7 +49,6 @@ public class Etudiant {
         this.ip_adress = ip_adress;
     }
 
-    
     public String getComment() {
         return comment;
     }
@@ -111,6 +110,12 @@ public boolean isDoubleOf(Etudiant e)
     }
     
     public String afficheHTML()
+    {
+        String s = ip_adress+ " "+ ID_VPL + " " + ID_etudiant+ " " + Cookie + " "+comment + " ";
+        return s;
+    }
+
+    public String afficheHTML2()
     {
         String s = "<tr><th>"+ ip_adress+ "</th> <th> "+ ID_VPL + " </th> <th> " + ID_etudiant+ " </th> <th> " + Cookie + " </th><th>"+comment + "</th></tr>";
         return s;
