@@ -12,11 +12,6 @@
 https://stackoverflow.com/questions/58821425/localtunnel-me-fixed-url-regeneration-eveytime-server-restarts
 
 
-
-### Mercredi :
-
-- 
-
 ### Vendredi :
 
 - création d'une interface pour serveur Spring, avec un formulaire de filtre et un formulaire pour ajouter manuellement un étudiant(test et demo only)
