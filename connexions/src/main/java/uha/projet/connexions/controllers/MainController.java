@@ -4,10 +4,14 @@
  */
 package uha.projet.connexions.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import uha.projet.connexions.Connexions;
 import uha.projet.connexions.Etudiant;
 
 /**
@@ -23,54 +26,7 @@ import uha.projet.connexions.Etudiant;
  * @author e1901478
  */
 /*
-@Controller
-@SessionAttributes("donnees")
-public class MainController {
-    
-    @ModelAttribute("donnees")
-    public ArrayList<Etudiant> creeAttribut()
-    {
-        return new ArrayList<Etudiant>();
-    }
-    
-    @GetMapping("/log")
-    public String log(@ModelAttribute("donnees") Connexions listeEtud, Model model)
-    {
-        model.addAttribute("liste", listeEtud);
-        return "log";
-    }
-    
-    @GetMapping("/test")
-    public String test(@ModelAttribute("donnees") ArrayList<Etudiant> listeEtud, Model model)
-    {
-        Etudiant e = new Etudiant("123", "John Smith", "789");
-        if(!listeEtud.contains(e))
-        {
-            listeEtud.add(e);
-        }
-        
-        model.addAttribute("info", listeEtud);
-        return "test";
-    }
-    
-    @GetMapping("/affiche")
-    public String affiche(@ModelAttribute("donnees") ArrayList<Etudiant> listeEtud, Model model)
-    {
-        model.addAttribute("info", listeEtud);
-        return "affiche";
-    }
-    
-    @GetMapping("/recharge")
-    public String ajoutCookie(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud, @RequestParam("nom_etud") String nom_etud, @RequestParam("id_vpl") String id_vpl, @RequestParam("cookie") String cookie)
-    {
-        Etudiant e = new Etudiant(id_vpl, nom_etud, cookie);
-        if(!listEtud.contains(e))
-        {
-            listEtud.add(e);
-        }
-        return "redirect:/affiche";
-    }
-}*/
+
 /**
  * @RestController public class MainController {
  *
@@ -83,6 +39,7 @@ public class MainController {
  * ResponseEntity.ok("Connexion enregistrée"); } }
  *
  */
+/*
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -94,7 +51,7 @@ public class MainController {
 
     //ArrayList<Etudiant> liste = new ArrayList<Etudiant>();
     @ModelAttribute("donnees")
-    public ArrayList<Etudiant> creeAttribut() {
+    private static ArrayList<Etudiant> creeAttribut() {
         return new ArrayList<Etudiant>();
     }
 
@@ -105,7 +62,7 @@ public class MainController {
         return "affiche";
     }
 
-    @GetMapping("/recharge")
+    /*@PostMapping("/recharge")
     public String connexion(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud,
             @RequestParam("nom_etud") String nom_etud,
             @RequestParam("id_vpl") String id_vpl,
@@ -130,9 +87,17 @@ public class MainController {
         System.out.println("cookie   = " + cookie);
         //return ResponseEntity.ok("Reçu depuis " + remoteIp);
         return "redirect:/affiche";
+    }*//*
+    @GetMapping("/recharge")
+    @ResponseBody
+    public String rechargeVPL(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud, @RequestBody Etudiant e, HttpServletRequest request) {
+        e.setIp_adress(request.getRemoteAddr());
+        e.setComment("Requête VPL POST");
+        listEtud.add(e);
+        return "Ajout VPL : " + e;
     }
 
-    @GetMapping("/filtre")
+    @PostMapping("/filtre")
     public RedirectView filtrage(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud,
             Model model,
             @RequestParam("vpl") String vpl,
@@ -165,27 +130,187 @@ public class MainController {
         return new RedirectView("/affiche");
     }
 
-}
+}*/
 
+@CrossOrigin(origins = "*")
+@Controller
+public class MainController {
 
-/*String s = "<head>\n"
-                + "<title>Log de connexions</title>\n"
-                + "<meta charset=\"UTF-8\">\n"
-                + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-                + "</head>\n"
-                + "<body>\n"
-                + "<div>Voici les logs de connexions</div>"
-                + "<body>"
-                + "<tr>"
-                + "<th> adresse ip</th>"
-                + "<th> VPL</th>"
-                + "<th> Nom </th>"
-                + "<th> Cookie </th>"
-                + "<th>Commentaire </th>"
-                + "</tr><br>";
-        for (int i = 0; i < liste.size(); i++) {
-            s += liste.get(i).afficheHTML() + "<br>";
+    // Liste statique partagée - persiste entre toutes les requêtes
+    private static final List<Etudiant> LISTE_ETUDIANTS = Collections.synchronizedList(new ArrayList<>());
+
+    @GetMapping("/affiche")
+    public String affiche(Model model) {
+        System.out.println("Page /affiche - Nombre d'étudiants: " + LISTE_ETUDIANTS.size());
+        
+        // Debug: afficher tous les étudiants
+        synchronized(LISTE_ETUDIANTS) {
+            for (int i = 0; i < LISTE_ETUDIANTS.size(); i++) {
+                System.out.println("Étudiant " + i + ": " + LISTE_ETUDIANTS.get(i).afficheHTML());
+            }
+        }
+        
+        // Créer une copie pour éviter les modifications concurrentes
+        List<Etudiant> copieEtudiants = new ArrayList<>(LISTE_ETUDIANTS);
+        
+        model.addAttribute("donnees", copieEtudiants);
+        model.addAttribute("filtree", copieEtudiants);
+        
+        return "affiche";
+    }
+
+    @GetMapping("/recharge")
+    public String connexion(@RequestParam("nom_etud") String nom_etud,
+            @RequestParam("id_vpl") String id_vpl,
+            @RequestParam("cookie") String cookie,
+            HttpServletRequest request) {
+        
+        // Récupération de l'adresse IP
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getHeader("X-Real-IP");
+        }
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getRemoteAddr();
+        }
+        
+        System.out.println("========== NOUVELLE REQUÊTE ==========");
+        System.out.println("Requête reçue de " + ip);
+        System.out.println("nom_etud = '" + nom_etud + "'");
+        System.out.println("id_vpl   = '" + id_vpl + "'");
+        System.out.println("cookie   = '" + cookie + "'");
+        System.out.println("Taille liste AVANT ajout: " + LISTE_ETUDIANTS.size());
+
+        // Création de l'étudiant
+        Etudiant nouvelEtudiant = new Etudiant(id_vpl, nom_etud, cookie, ip);
+
+        // Vérification et ajout à la liste
+        if (nom_etud != null && !nom_etud.trim().isEmpty() && !nom_etud.equals("Utilisateur non trouvé")) {
+            
+            synchronized(LISTE_ETUDIANTS) {
+                // Vérifier si l'étudiant existe déjà (même nom, même VPL, même IP)
+                boolean existe = false;
+                for (Etudiant existant : LISTE_ETUDIANTS) {
+                    if (existant.getID_etudiant().equals(nouvelEtudiant.getID_etudiant()) && 
+                        existant.getID_VPL().equals(nouvelEtudiant.getID_VPL()) && 
+                        existant.getIp_adress().equals(nouvelEtudiant.getIp_adress())) {
+                        existe = true;
+                        System.out.println("Étudiant déjà présent (même nom, VPL et IP)");
+                        break;
+                    }
+                }
+                
+                if (!existe) {
+                    // Générer le commentaire en fonction de la liste actuelle
+                    nouvelEtudiant.setCommentFromList(new ArrayList<>(LISTE_ETUDIANTS));
+                    LISTE_ETUDIANTS.add(nouvelEtudiant);
+                    System.out.println("✅ Nouvel étudiant ajouté: " + nouvelEtudiant.getID_etudiant());
+                } else {
+                    System.out.println("⚠️ Étudiant déjà présent, non ajouté");
+                }
+            }
+        } else {
+            System.out.println("❌ Étudiant non valide (nom vide ou 'Utilisateur non trouvé')");
+        }
+        
+        System.out.println("Taille liste APRÈS ajout: " + LISTE_ETUDIANTS.size());
+        System.out.println("=====================================");
+        
+        return "redirect:/affiche";
+    }
+
+    @PostMapping("/recharge")
+    public String connexionPost(@RequestParam("nom_etud") String nom_etud,
+            @RequestParam("id_vpl") String id_vpl,
+            @RequestParam("cookie") String cookie,
+            HttpServletRequest request) {
+        System.out.println("Requête POST reçue");
+        return connexion(nom_etud, id_vpl, cookie, request);
+    }
+
+    @GetMapping("/filtre")
+    public String filtrage(Model model,
+            @RequestParam(value = "vpl", required = false) String vpl,
+            @RequestParam(value = "etudiant", required = false) String etudiant) {
+
+        List<Etudiant> filtree = new ArrayList<>();
+        
+        synchronized(LISTE_ETUDIANTS) {
+            // Logique de filtrage
+            for (Etudiant e : LISTE_ETUDIANTS) {
+                boolean matchVpl = (vpl == null || vpl.trim().isEmpty() || e.getID_VPL().equals(vpl.trim()));
+                boolean matchEtudiant = (etudiant == null || etudiant.trim().isEmpty() || e.getID_etudiant().equals(etudiant.trim()));
+                
+                if (matchVpl && matchEtudiant) {
+                    filtree.add(e);
+                }
+            }
         }
 
-        s += "</table>"
-                + "</body>";*/
+        // Ajout des attributs au modèle
+        model.addAttribute("filtree", filtree);
+        model.addAttribute("donnees", new ArrayList<>(LISTE_ETUDIANTS));
+        
+        System.out.println("Filtrage - VPL: '" + vpl + "', Etudiant: '" + etudiant + "'");
+        System.out.println("Résultats filtrés: " + filtree.size() + " étudiants");
+        
+        return "affiche";
+    }
+    
+    @GetMapping("/reset")
+    public String reset() {
+        synchronized(LISTE_ETUDIANTS) {
+            LISTE_ETUDIANTS.clear();
+        }
+        System.out.println("Liste des étudiants réinitialisée");
+        return "redirect:/affiche";
+    }
+    
+    @GetMapping("/debug")
+    public String debug(Model model) {
+        System.out.println("=== DEBUG INFO ===");
+        synchronized(LISTE_ETUDIANTS) {
+            System.out.println("Nombre d'étudiants: " + LISTE_ETUDIANTS.size());
+            for (int i = 0; i < LISTE_ETUDIANTS.size(); i++) {
+                Etudiant e = LISTE_ETUDIANTS.get(i);
+                System.out.println("Étudiant " + i + ":");
+                System.out.println("  - Nom: '" + e.getID_etudiant() + "'");
+                System.out.println("  - VPL: '" + e.getID_VPL() + "'");
+                System.out.println("  - Cookie: '" + e.getCookie() + "'");
+                System.out.println("  - IP: '" + e.getIp_adress() + "'");
+                System.out.println("  - Commentaire: '" + e.getComment() + "'");
+            }
+        }
+        System.out.println("==================");
+        
+        List<Etudiant> copieEtudiants = new ArrayList<>(LISTE_ETUDIANTS);
+        model.addAttribute("donnees", copieEtudiants);
+        model.addAttribute("filtree", copieEtudiants);
+        return "affiche";
+    }
+
+    @GetMapping("/stats")
+    public String stats(Model model) {
+        List<Etudiant> copieEtudiants = new ArrayList<>(LISTE_ETUDIANTS);
+        
+        model.addAttribute("donnees", copieEtudiants);
+        model.addAttribute("filtree", copieEtudiants);
+        model.addAttribute("totalEtudiants", copieEtudiants.size());
+        
+        // Compter les étudiants uniques
+        long etudiantsUniques = copieEtudiants.stream()
+                .map(Etudiant::getID_etudiant)
+                .distinct()
+                .count();
+        model.addAttribute("etudiantsUniques", etudiantsUniques);
+        
+        // Compter les VPL uniques
+        long vplUniques = copieEtudiants.stream()
+                .map(Etudiant::getID_VPL)
+                .distinct()
+                .count();
+        model.addAttribute("vplUniques", vplUniques);
+        
+        return "affiche";
+    }
+}
