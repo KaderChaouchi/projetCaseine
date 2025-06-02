@@ -53,7 +53,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <th>Cookie</th>
                 <th>Commentaire</th>
                 </tr>
-        <th:block th:each=" elt : ${info}">
+        <th:block th:each=" elt : ${donnees}">
             <tr>
                 <td> <span th:text="${elt.getIp_adress()}"/></td>
                 <td> <span th:text="${elt.getID_VPL()}"/></td>

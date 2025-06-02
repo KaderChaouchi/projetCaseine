@@ -101,12 +101,12 @@ public class MainController {
     @GetMapping("/affiche")
     public String affiche(@ModelAttribute("donnees") ArrayList<Etudiant> listeEtud, Model model) {
 
-        model.addAttribute("info", listeEtud);
+        model.addAttribute("donnees", listeEtud);
         return "affiche";
     }
 
     @GetMapping("/recharge")
-    public RedirectView connexion(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud,
+    public String connexion(@ModelAttribute("donnees") ArrayList<Etudiant> listEtud,
             @RequestParam("nom_etud") String nom_etud,
             @RequestParam("id_vpl") String id_vpl,
             @RequestParam("cookie") String cookie,
@@ -129,7 +129,7 @@ public class MainController {
         System.out.println("id_vpl   = " + id_vpl);
         System.out.println("cookie   = " + cookie);
         //return ResponseEntity.ok("Reçu depuis " + remoteIp);
-        return new RedirectView("/affiche");
+        return "redirect:/affiche";
     }
 
     @GetMapping("/filtre")
