@@ -5,6 +5,13 @@
 package uha.projet.connexions.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +46,7 @@ import uha.projet.connexions.Etudiant;
  * ResponseEntity.ok("Connexion enregistrée"); } }
  *
  */
-/*
+ /*
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -149,13 +156,13 @@ public class MainController {
                 System.out.println("Étudiant " + i + ": " + LISTE_ETUDIANTS.get(i).afficheHTML());
             }
         }
-        
+
         // Créer une copie pour éviter les modifications concurrentes
         List<Etudiant> copieEtudiants = new ArrayList<>(LISTE_ETUDIANTS);
-        
+
         model.addAttribute("donnees", copieEtudiants);
         model.addAttribute("filtree", copieEtudiants);
-        
+
         return "affiche";
     }
 
@@ -164,7 +171,7 @@ public class MainController {
             @RequestParam("id_vpl") String id_vpl,
             @RequestParam("cookie") String cookie,
             HttpServletRequest request) {
-        
+
         // Récupération de l'adresse IP
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.isEmpty()) {
@@ -173,7 +180,7 @@ public class MainController {
         if (ip == null || ip.isEmpty()) {
             ip = request.getRemoteAddr();
         }
-        
+
         System.out.println("========== NOUVELLE REQUÊTE ==========");
         System.out.println("Requête reçue de " + ip);
         System.out.println("nom_etud = '" + nom_etud + "'");
@@ -186,20 +193,20 @@ public class MainController {
 
         // Vérification et ajout à la liste
         if (nom_etud != null && !nom_etud.trim().isEmpty() && !nom_etud.equals("Utilisateur non trouvé")) {
-            
-            synchronized(LISTE_ETUDIANTS) {
+
+            synchronized (LISTE_ETUDIANTS) {
                 // Vérifier si l'étudiant existe déjà (même nom, même VPL, même IP)
                 boolean existe = false;
                 for (Etudiant existant : LISTE_ETUDIANTS) {
-                    if (existant.getID_etudiant().equals(nouvelEtudiant.getID_etudiant()) && 
-                        existant.getID_VPL().equals(nouvelEtudiant.getID_VPL()) && 
-                        existant.getIp_adress().equals(nouvelEtudiant.getIp_adress())) {
+                    if (existant.getID_etudiant().equals(nouvelEtudiant.getID_etudiant())
+                            && existant.getID_VPL().equals(nouvelEtudiant.getID_VPL())
+                            && existant.getIp_adress().equals(nouvelEtudiant.getIp_adress())) {
                         existe = true;
-                        System.out.println("Étudiant déjà présent (même nom, VPL et IP)");
+                        //System.out.println("Étudiant déjà présent (même nom, VPL et IP)");
                         break;
                     }
                 }
-                
+
                 if (!existe) {
                     // Générer le commentaire en fonction de la liste actuelle
                     nouvelEtudiant.setCommentFromList(new ArrayList<>(LISTE_ETUDIANTS));
@@ -212,10 +219,10 @@ public class MainController {
         } else {
             System.out.println("❌ Étudiant non valide (nom vide ou 'Utilisateur non trouvé')");
         }
-        
+
         System.out.println("Taille liste APRÈS ajout: " + LISTE_ETUDIANTS.size());
         System.out.println("=====================================");
-        
+
         return "redirect:/affiche";
     }
 
@@ -234,13 +241,13 @@ public class MainController {
             @RequestParam(value = "etudiant", required = false) String etudiant) {
 
         List<Etudiant> filtree = new ArrayList<>();
-        
-        synchronized(LISTE_ETUDIANTS) {
+
+        synchronized (LISTE_ETUDIANTS) {
             // Logique de filtrage
             for (Etudiant e : LISTE_ETUDIANTS) {
                 boolean matchVpl = (vpl == null || vpl.trim().isEmpty() || e.getID_VPL().equals(vpl.trim()));
                 boolean matchEtudiant = (etudiant == null || etudiant.trim().isEmpty() || e.getID_etudiant().equals(etudiant.trim()));
-                
+
                 if (matchVpl && matchEtudiant) {
                     filtree.add(e);
                 }
@@ -250,26 +257,26 @@ public class MainController {
         // Ajout des attributs au modèle
         model.addAttribute("filtree", filtree);
         model.addAttribute("donnees", new ArrayList<>(LISTE_ETUDIANTS));
-        
+
         System.out.println("Filtrage - VPL: '" + vpl + "', Etudiant: '" + etudiant + "'");
         System.out.println("Résultats filtrés: " + filtree.size() + " étudiants");
-        
+
         return "affiche";
     }
-    
+
     @GetMapping("/reset")
     public String reset() {
-        synchronized(LISTE_ETUDIANTS) {
+        synchronized (LISTE_ETUDIANTS) {
             LISTE_ETUDIANTS.clear();
         }
         System.out.println("Liste des étudiants réinitialisée");
         return "redirect:/affiche";
     }
-    
+
     @GetMapping("/debug")
     public String debug(Model model) {
         System.out.println("=== DEBUG INFO ===");
-        synchronized(LISTE_ETUDIANTS) {
+        synchronized (LISTE_ETUDIANTS) {
             System.out.println("Nombre d'étudiants: " + LISTE_ETUDIANTS.size());
             for (int i = 0; i < LISTE_ETUDIANTS.size(); i++) {
                 Etudiant e = LISTE_ETUDIANTS.get(i);
@@ -282,7 +289,7 @@ public class MainController {
             }
         }
         System.out.println("==================");
-        
+
         List<Etudiant> copieEtudiants = new ArrayList<>(LISTE_ETUDIANTS);
         model.addAttribute("donnees", copieEtudiants);
         model.addAttribute("filtree", copieEtudiants);
@@ -292,25 +299,83 @@ public class MainController {
     @GetMapping("/stats")
     public String stats(Model model) {
         List<Etudiant> copieEtudiants = new ArrayList<>(LISTE_ETUDIANTS);
-        
+
         model.addAttribute("donnees", copieEtudiants);
         model.addAttribute("filtree", copieEtudiants);
         model.addAttribute("totalEtudiants", copieEtudiants.size());
-        
+
         // Compter les étudiants uniques
         long etudiantsUniques = copieEtudiants.stream()
                 .map(Etudiant::getID_etudiant)
                 .distinct()
                 .count();
         model.addAttribute("etudiantsUniques", etudiantsUniques);
-        
+
         // Compter les VPL uniques
         long vplUniques = copieEtudiants.stream()
                 .map(Etudiant::getID_VPL)
                 .distinct()
                 .count();
         model.addAttribute("vplUniques", vplUniques);
-        
+
         return "affiche";
+    }
+
+    @GetMapping("/export_normal")
+    public String exportToFile(@RequestParam(value = "file_name", required = true) String file_name) throws IOException {
+        
+        List<Etudiant> copieEtudiants = new ArrayList<>(LISTE_ETUDIANTS);
+        
+        String full_path = "D:\\"+file_name;
+        Path path = Paths.get(full_path);
+
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(
+                path, StandardOpenOption.APPEND, StandardOpenOption.CREATE); PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
+            printWriter.println("Adresse ip ; ID VPL ; Nom Etudiant ; Cookie ; Commentaire");
+            String s = "";
+            for(int i = 0; i <copieEtudiants.size(); i++)
+            {
+                s = copieEtudiants.get(i).toString(); 
+                printWriter.println(s);
+            }
+            
+        }
+        return "redirect:/affiche";
+    }
+
+    @GetMapping("/export_filtre")
+    public String exportToFileFiltre(
+            @RequestParam(value = "file_name", required = true) String file_name,
+            @RequestParam(value = "vpl", required = false) String vpl,
+            @RequestParam(value = "etudiant", required = false) String etudiant) throws IOException {
+        List<Etudiant> filtree = new ArrayList<>();
+
+        synchronized (LISTE_ETUDIANTS) {
+            // Logique de filtrage
+            for (Etudiant e : LISTE_ETUDIANTS) {
+                boolean matchVpl = (vpl == null || vpl.trim().isEmpty() || e.getID_VPL().equals(vpl.trim()));
+                boolean matchEtudiant = (etudiant == null || etudiant.trim().isEmpty() || e.getID_etudiant().equals(etudiant.trim()));
+
+                if (matchVpl && matchEtudiant) {
+                    filtree.add(e);
+                }
+            }
+        }
+        String full_path = "D:\\"+file_name;
+        Path path = Paths.get(full_path);
+
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(
+                path, StandardOpenOption.APPEND, StandardOpenOption.CREATE); PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
+            printWriter.println("Adresse ip ; ID VPL ; Nom Etudiant ; Cookie ; Commentaire");
+            String s = "";
+            for(int i = 0; i <filtree.size(); i++)
+            {
+                s = filtree.get(i).toString(); 
+                printWriter.println(s);
+            }
+            
+        }
+
+        return "redirect:/affiche";
     }
 }

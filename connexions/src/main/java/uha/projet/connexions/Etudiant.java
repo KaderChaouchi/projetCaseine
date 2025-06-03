@@ -134,4 +134,11 @@ public boolean isDoubleOf(Etudiant e)
         Etudiant e = (Etudiant)o;
         return ID_VPL.equals(e.getID_VPL()) && ID_etudiant.equals(e.getID_etudiant()) && Cookie.equals(e.getCookie()) && ip_adress.equals(e.getIp_adress());
     }
+    
+    public String toString()
+    {
+        return ip_adress + " ; "+ ID_VPL + " ; " + ID_etudiant+ " ; "+ Cookie+ " ; " + comment;
+    }
+    
+    
 }

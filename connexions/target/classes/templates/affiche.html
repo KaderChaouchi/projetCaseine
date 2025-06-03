@@ -50,6 +50,7 @@
             <input type="button" value="Tout afficher" onclick="window.location.href='/affiche'">
         </form>
         
+        
         <!-- Résultats filtrés -->
         <h2>📋 Résultats filtrés</h2>
         <div th:if="${#lists.isEmpty(filtree)}">
@@ -108,6 +109,26 @@
                 </tbody>
             </table>
         </div>
+        <h2>Exportation</h2>
+        <h3>Normale</h3>
+        <form method="get" action ="./export_normal">
+            <label>Nom du fichier : </label>
+            <input type ="text" name="file_name" placeholder="filtre.txt" required><br>
+            
+            <input type="submit" value = "exporter">
+        </form>
+        <h3>filtrée</h3>
+        <form method="get" action ="./export_filtre">
+            <label>VPL:</label>
+            <input type="text" name="vpl" placeholder="Laisser vide pour tous"><br>
+            <label>Nom de l'étudiant:</label>
+            <input type="text" name="etudiant" placeholder="Laisser vide pour tous"><br>
+            <label>Nom du fichier : </label>
+            <input type ="text" name="file_name" placeholder="filtre.txt" required><br>
+            
+            <input type="submit" value = "exporter">
+        </form>
+        
         
         <!-- Script pour auto-refresh (optionnel) -->
         <script>

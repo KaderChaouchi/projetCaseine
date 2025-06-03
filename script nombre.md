@@ -250,7 +250,7 @@ sendRechargeRequest(username, id_vpl, cookieValue);
 </script>
 ```
 
-Méthode 6 :
+### Méthode 6 :
 
 ```html
 <p id="info"></p>
@@ -324,4 +324,9 @@ Méthode 6 :
     console.error("❌ Erreur réseau :", error);
   });
 </script>
+```
+
+### Méthode 7 :
+
+```html
 ```
