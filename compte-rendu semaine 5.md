@@ -9,3 +9,7 @@
 - fonction filtre
 - fonctions d'exportation (avec eet sans filtre)
 - vpl : continuation de la recherche pour régler un problème de numéros de version(au ca où deux requêtes sont faites en même temps et donc avec le même numéro)
+
+### Mercredi :
+
+- start rapport

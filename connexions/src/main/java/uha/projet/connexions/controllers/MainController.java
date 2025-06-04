@@ -146,16 +146,22 @@ public class MainController {
     // Liste statique partagée - persiste entre toutes les requêtes
     private static final List<Etudiant> LISTE_ETUDIANTS = Collections.synchronizedList(new ArrayList<>());
 
+    @GetMapping("/")
+    public String index()
+    {
+        return "redirect:/affiche";
+    }
+    
     @GetMapping("/affiche")
     public String affiche(Model model) {
-        System.out.println("Page /affiche - Nombre d'étudiants: " + LISTE_ETUDIANTS.size());
+        /*System.out.println("Page /affiche - Nombre d'étudiants: " + LISTE_ETUDIANTS.size());
         
         // Debug: afficher tous les étudiants
         synchronized(LISTE_ETUDIANTS) {
             for (int i = 0; i < LISTE_ETUDIANTS.size(); i++) {
                 System.out.println("Étudiant " + i + ": " + LISTE_ETUDIANTS.get(i).afficheHTML());
             }
-        }
+        }*/
 
         // Créer une copie pour éviter les modifications concurrentes
         List<Etudiant> copieEtudiants = new ArrayList<>(LISTE_ETUDIANTS);
